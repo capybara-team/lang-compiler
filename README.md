@@ -1,4 +1,4 @@
-# Compilador
+# Compilador LANG
 
 Trabalho da disciplina DCC045-Teoria dos Compiladores (UFJF)
 
