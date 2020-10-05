@@ -1,0 +1,41 @@
+package com.compiler;
+
+public enum TOKEN_TYPE {
+    ID,
+    PAR_OPEN,       // (
+    PAR_CLOSE,      // )
+    BRACE_OPEN,     // {
+    BRACE_CLOSE,    // }
+    BRACKET_OPEN,   // [
+    BRACKET_CLOSE,  // ]
+    DOT,            // .
+    COMMA,          // ,
+    SEMICOL,        // ;
+    // TYPES
+    INT,
+    CHAR,
+    BOOL,
+    FLOAT,
+    NULL,
+    //Math
+    PLUS,
+    MINUS,
+    MULTIPLY,
+    DIVIDE,
+    MOD,
+    // LOGIC
+    EQUALS,
+    NOTEQ,
+    AND,
+    TRUE,
+    FALSE,
+    LESS_THAN,
+    // Commands
+    IF,
+    ELSE,
+    ITERATE,
+    READ,
+    PRINT,
+    RETURN,
+    SET,        // =
+}
