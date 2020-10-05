@@ -10,24 +10,27 @@ import java_cup.runtime.*;
 
 %class Alexicon
 %unicode
-%cup
+//%cup
 %line
 %column
+%type Token
+%function nextToken
 
 %{
   StringBuffer tempString = new StringBuffer();
 
-  private Symbol symbol(TOKEN_TYPE type) {
-    return new Token(type, yyline, yycolumn);
+  private Token symbol(TOKEN_TYPE type) {
+    return new Token(type, yyline+1, yycolumn+1, yytext());
   }
-  private Symbol symbol(TOKEN_TYPE type, String lexeme) {
-    return new Token(type, yyline, yycolumn, lexeme);
+  private Token symbol(TOKEN_TYPE type, String lexeme) {
+    return new Token(type, yyline+1, yycolumn+1, lexeme);
   }
 %}
 
 LineTerminator = \r|\n|\r\n
-InputCharacter = [^\r\n]
 WhiteSpace     = {LineTerminator} | [ \t\f]
+InputCharacter = [^\r\n]
+Numero         = [:digit:] [:digit:]*
 
 /* comments */
 Comment = {TraditionalComment} | {EndOfLineComment} | {DocumentationComment}
@@ -46,49 +49,59 @@ DecIntegerLiteral = 0 | [1-9][0-9]*
 
 %%
 
-/* keywords */
-<YYINITIAL> "if"            { return symbol(TOKEN_TYPE.IF); }
-<YYINITIAL> "else"          { return symbol(TOKEN_TYPE.ELSE); }
-<YYINITIAL> "iterate"       { return symbol(TOKEN_TYPE.ITERATE); }
-<YYINITIAL> "read"          { return symbol(TOKEN_TYPE.READ); }
-<YYINITIAL> "print"         { return symbol(TOKEN_TYPE.PRINT); }
-<YYINITIAL> "return"        { return symbol(TOKEN_TYPE.RETURN); }
-<YYINITIAL> {
-    /* operators */
-    "="                     { return symbol(TOKEN_TYPE.SET); }
-    "=="                     { return symbol(TOKEN_TYPE.EQUALS); }
-    "!="                     { return symbol(TOKEN_TYPE.NOTEQ); }
-    "+"                     { return symbol(TOKEN_TYPE.PLUS); }
-    "-"                     { return symbol(TOKEN_TYPE.MINUS); }
-    "*"                     { return symbol(TOKEN_TYPE.MULTIPLY); }
-    "/"                     { return symbol(TOKEN_TYPE.DIVIDE); }
-    "%"                     { return symbol(TOKEN_TYPE.MOD); }
-    ";"                     { return symbol(TOKEN_TYPE.SEMICOL); }
-}
 
-<YYINITIAL> {
-    /* types */
-    "int"                     { return symbol(TOKEN_TYPE.INT); }
-}
-<YYINITIAL> {
+<YYINITIAL>{ 
   /* identifiers */
-  {Identifier}                   { return symbol(TOKEN_TYPE.IDENTIFIER); }
-
-  /* literals */
-  {DecIntegerLiteral}            { return symbol(TOKEN_TYPE.INTEGER_LITERAL); }
-  \"                             { tempString.setLength(0); yybegin(STRING); }
-
-  /* operators */
-  "="                            { return symbol(TOKEN_TYPE.EQ); }
-  "=="                           { return symbol(TOKEN_TYPE.EQEQ); }
-  "+"                            { return symbol(TOKEN_TYPE.PLUS); }
-
+  {Identifier}    { return symbol(TOKEN_TYPE.IDENTIFIER); }
   /* comments */
-  {Comment}                      { /* ignore */ }
-
+  {Comment}       { /* Ignora */ }
   /* whitespace */
-  {WhiteSpace}                   { /* ignore */ }
+  {WhiteSpace}    { /* Ignora */ }
+  /* literals */
+  {DecIntegerLiteral}       { return symbol(TOKEN_TYPE.INTEGER_LITERAL); }
+  \"                        { tempString.setLength(0); yybegin(STRING); }
+  /* keywords */
+  "if"            { return symbol(TOKEN_TYPE.IF, ); }
+  "else"          { return symbol(TOKEN_TYPE.ELSE); }
+  "iterate"       { return symbol(TOKEN_TYPE.ITERATE); }
+  "read"          { return symbol(TOKEN_TYPE.READ); }
+  "print"         { return symbol(TOKEN_TYPE.PRINT); }
+  "return"        { return symbol(TOKEN_TYPE.RETURN); }
+  /* operators */
+  "="             { return symbol(TOKEN_TYPE.SET); }
+  "=="            { return symbol(TOKEN_TYPE.EQUALS); }
+  "!="            { return symbol(TOKEN_TYPE.NOTEQ); }
+  "+"             { return symbol(TOKEN_TYPE.PLUS); }
+  "-"             { return symbol(TOKEN_TYPE.MINUS); }
+  "*"             { return symbol(TOKEN_TYPE.MULTIPLY); }
+  "/"             { return symbol(TOKEN_TYPE.DIVIDE); }
+  "%"             { return symbol(TOKEN_TYPE.MOD); }
+  ";"             { return symbol(TOKEN_TYPE.SEMICOL); }
+  /* types */
+  "Int"           { return symbol(TOKEN_TYPE.INT); }
+  "Char"          {return symbol(TOKEN_TYPE.CHAR); }
+  "Bool"          {return symbol(TOKEN_TYPE.BOOL); }
+  "Float"         {return symbol(TOKEN_TYPE.FLOAT);}
+  "ID"            {return symbol(TOKEN_TYPE.ID);   }
+  "null"          {return symbol(TOKEN_TYPE.NULL); }
+  /*Logic*/
+  "true"          {return symbol(TOKEN_TYPE.TRUE); }
+  "false"         {return symbol(TOKEN_TYPE.FALSE);}
+  "<"             {return symbol(TOKEN_TYPE.LESS_THAN);}
+  ">"             {return symbol(TOKEN_TYPE.BIGGER_THAN);}
+  "&&"            {return symbol(TOKEN_TYPE.AND);}
+
+  "("             {return symbol(TOKEN_TYPE.PAR_OPEN);}
+  ")"             {return symbol(TOKEN_TYPE.PAR_CLOSE);}
+  "{"             {return symbol(TOKEN_TYPE.BRACE_OPEN);}
+  "}"             {return symbol(TOKEN_TYPE.BRACE_CLOSE);}
+  "["             {return symbol(TOKEN_TYPE.BRACKET_OPEN);}
+  "]"             {return symbol(TOKEN_TYPE.BRACKET_CLOSE);}
+  "."             {return symbol(TOKEN_TYPE.DOT);}
+  ","             {return symbol(TOKEN_TYPE.COMMA);}
+
 }
+
 
 <STRING> {
   \"                             { yybegin(YYINITIAL);
@@ -104,10 +117,14 @@ DecIntegerLiteral = 0 | [1-9][0-9]*
 }
 
 <INT> {
-
+  {Numero}          {yybegin(YYINITIAL);
+                      return symbol(TOKEN_TYPE.INT_NUM);}
+  {Numero}"."       {yybegin(FLOAT);}
 }
 
 <FLOAT> {
+  {Numero}"."{Numero}   {yybegin(YYINITIAL);
+                      return symbol(TOKEN_TYPE.FLOAT_NUM);}
 }
 
 /* error fallback */

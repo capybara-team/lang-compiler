@@ -18,5 +18,12 @@ public class Token {
         col = c;
     }
 
+	@Override
+	public String toString() {
+		return "Token: type: " + type + "\t Lexeme: " + lexeme + "\t Linha: " + line + "\t Coluna: " + col ;
+	}
+    
+    
+
 
 }

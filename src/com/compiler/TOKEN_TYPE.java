@@ -12,6 +12,8 @@ public enum TOKEN_TYPE {
     COMMA,          // ,
     SEMICOL,        // ;
     // TYPES
+    INT_NUM,
+    FLOAT_NUM,
     INT,
     CHAR,
     BOOL,
@@ -30,6 +32,7 @@ public enum TOKEN_TYPE {
     TRUE,
     FALSE,
     LESS_THAN,
+    BIGGER_THAN,
     // Commands
     IF,
     ELSE,
