@@ -1,3 +1,8 @@
+/**
+ * Main file
+ * @author Maxwell Souza
+ * @author Rodolpho Rossete
+ */
 package com.compiler;
 
 import java.io.FileReader;
@@ -18,7 +23,7 @@ public class Main {
 
 	private static void validarArgs(String args) {
 		if(args.isEmpty()) {
-			throw new RuntimeException("O arquivo de leitura deve ser passado como parâmetro.");
+			throw new RuntimeException("O arquivo de leitura deve ser passado como parï¿½metro.");
 		}
 		
 	}

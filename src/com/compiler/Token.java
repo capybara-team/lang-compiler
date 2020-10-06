@@ -1,3 +1,8 @@
+/**
+ * Token class
+ * @author Maxwell Souza
+ * @author Rodolpho Rossete
+ */
 package com.compiler;
 
 public class Token {

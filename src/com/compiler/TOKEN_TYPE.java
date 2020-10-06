@@ -1,3 +1,8 @@
+/**
+ * Token types enum
+ * @author Maxwell Souza
+ * @author Rodolpho Rossete
+ */
 package com.compiler;
 
 public enum TOKEN_TYPE {
@@ -14,6 +19,7 @@ public enum TOKEN_TYPE {
     // TYPES
     INT_NUM,
     FLOAT_NUM,
+    STRING_LITERAL,
     INT,
     CHAR,
     BOOL,
@@ -28,6 +34,7 @@ public enum TOKEN_TYPE {
     // LOGIC
     EQUALS,
     NOTEQ,
+    NOT,
     AND,
     TRUE,
     FALSE,
@@ -41,4 +48,6 @@ public enum TOKEN_TYPE {
     PRINT,
     RETURN,
     SET,        // =
+    TYPEDEF,    // ::
+    RETURNDEF,  // :
 }
